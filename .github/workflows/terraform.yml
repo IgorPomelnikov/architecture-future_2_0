@@ -1,0 +1,86 @@
+name: Terraform
+
+on:
+  pull_request:
+    paths:
+      - "Task1Advanced/**"
+      - ".github/workflows/terraform.yml"
+      - ".github/workflows/terraform-apply.yml"
+  push:
+    branches: [main, master]
+    paths:
+      - "Task1Advanced/**"
+      - ".github/workflows/terraform.yml"
+      - ".github/workflows/terraform-apply.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    name: Validate (${{ matrix.environment }})
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        environment: [dev, stage, prod]
+
+    defaults:
+      run:
+        working-directory: Task1Advanced/envs/${{ matrix.environment }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup OpenTofu
+        uses: opentofu/setup-opentofu@v1
+        with:
+          tofu_version: 1.9.0
+
+      - name: Terraform Format Check
+        run: tofu fmt -check -recursive
+        working-directory: Task1Advanced
+
+      - name: Terraform Init
+        run: tofu init -input=false
+
+      - name: Terraform Validate
+        run: tofu validate
+
+  plan:
+    name: Plan (${{ matrix.environment }})
+    runs-on: ubuntu-latest
+    needs: validate
+    strategy:
+      fail-fast: false
+      matrix:
+        environment: [dev, stage, prod]
+
+    defaults:
+      run:
+        working-directory: Task1Advanced/envs/${{ matrix.environment }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup OpenTofu
+        uses: opentofu/setup-opentofu@v1
+        with:
+          tofu_version: 1.9.0
+
+      - name: Terraform Init
+        run: tofu init -input=false
+
+      - name: Terraform Plan
+        run: tofu plan -input=false -no-color -out=tfplan
+        continue-on-error: true
+
+      - name: Upload plan (if present)
+        uses: actions/upload-artifact@v4
+        if: success() || failure()
+        with:
+          name: tfplan-${{ matrix.environment }}
+          path: Task1Advanced/envs/${{ matrix.environment }}/tfplan
+          if-no-files-found: ignore

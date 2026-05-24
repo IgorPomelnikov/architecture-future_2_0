@@ -1,0 +1,23 @@
+# Terraform
+**/.terraform/
+*.tfstate
+*.tfstate.*
+*.tfplan
+crash.log
+crash.*.log
+override.tf
+override.tf.json
+*_override.tf
+*_override.tf.json
+.terraformrc
+terraform.rc
+
+# Backend credentials (never commit)
+backend.hcl
+backend.ci.hcl
+*.auto.tfvars
+secrets.tfvars
+.env
+
+# MinIO data
+.minio-data/
