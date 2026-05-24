@@ -1,0 +1,41 @@
+# Terraform / OpenTofu
+**/.terraform/
+*.tfstate
+*.tfstate.*
+*.tfplan
+crash.log
+crash.*.log
+override.tf
+override.tf.json
+*_override.tf
+*_override.tf.json
+.terraformrc
+terraform.rc
+
+# Secrets and local backend config (never commit)
+**/backend.hcl
+**/backend.ci.hcl
+*.auto.tfvars
+secrets.tfvars
+.env
+.env.*
+
+# MinIO local data
+**/.minio-data/
+
+# OS
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# IDE / editors
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# Logs
+*.log
+
+*.bkp

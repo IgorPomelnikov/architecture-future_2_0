@@ -1,0 +1,18 @@
+# Yandex Object Storage (S3-compatible API)
+# https://yandex.cloud/ru/docs/storage/tools/terraform
+#
+# Use as: tofu init -backend-config=backend.yandex.hcl
+# Set secrets via environment variables, not in this file.
+
+bucket   = "my-terraform-state-bucket"
+key      = "task2advanced/dev/terraform.tfstate"
+region   = "ru-central1"
+endpoint = "https://storage.yandexcloud.net"
+
+# access_key = set via AWS_ACCESS_KEY_ID
+# secret_key = set via AWS_SECRET_ACCESS_KEY
+
+skip_region_validation      = true
+skip_credentials_validation = false
+skip_metadata_api_check     = false
+use_path_style              = false
